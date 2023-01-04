@@ -1,9 +1,9 @@
-import flask.json
 from flask import Flask
 import json
-import time
 
 import tinytuya
+
+import utils
 
 app = Flask(__name__)
 
@@ -22,6 +22,9 @@ for device in local_devices:
         version=device['ver'],
     )
     m_device.set_socketPersistent(True)
+    m_device.set_socketNODELAY(True)
+    m_device.set_socketRetryLimit(1)
+    m_device.set_socketTimeout(2)
     m_device.set_bulb_type('B')
     tuya_devices[device['id']] = m_device
 
@@ -72,7 +75,11 @@ def status(dev_id):
             "status": "ERR"
         }
 
-    return d.status()
+    resp = d.status()
+    if "Err" in resp:
+        return utils.resp_err(resp)
+    else:
+        return utils.resp_success(resp)
 
 
 @app.get('/<dev_id>/lux/<int:percent>')
@@ -94,7 +101,7 @@ def set_lux(dev_id, percent):
 def list_devices():
     return {
         "status": "OK",
-        "devices": [keys for keys in tuya_devices]
+        "devices": [d for d in local_devices]
     }
 
 
