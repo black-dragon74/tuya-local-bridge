@@ -2,9 +2,8 @@ version: "3.7"
 
 services:
   tuya_local_bridge:
+    network_mode: host
     container_name: tuya_local_bridge
     build:
       context: .
     restart: unless-stopped
-    ports:
-      - "8586:8000"
