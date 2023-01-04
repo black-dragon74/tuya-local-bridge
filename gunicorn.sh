@@ -4,4 +4,4 @@ if [[ ! -e snapshot.json ]]; then
   exit 1
 fi
 
-gunicorn -w 4 -b 0.0.0.0:8586 'main:app'
+gunicorn -b 0.0.0.0:8586 'main:app'
